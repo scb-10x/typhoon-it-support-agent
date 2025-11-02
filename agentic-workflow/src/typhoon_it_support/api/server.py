@@ -7,14 +7,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from ..config.user_context import get_current_user, get_company_info
-from ..utils import apply_typhoon_api_patch
 from .models import HealthResponse, UserInfo, UserSessionResponse
 from .chat_endpoints import router as chat_router
 from .ticket_endpoints import router as ticket_router
 from .ticket_advanced_endpoints import router as ticket_advanced_router
-
-# Apply Typhoon API compatibility patch for max_tokens parameter
-apply_typhoon_api_patch()
 
 
 @asynccontextmanager

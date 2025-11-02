@@ -13,10 +13,8 @@ from .message_builder import (
     has_tool_results,
 )
 from .routing_constants import COMPLETION_PHRASES, ESCALATION_PHRASES
-from .typhoon_patch import apply_typhoon_api_patch
 
 __all__ = [
-    "apply_typhoon_api_patch",
     "create_llm",
     "create_tool_llm",
     "create_routing_llm",
