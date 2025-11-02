@@ -26,4 +26,3 @@ __all__ = [
     "COMPLETION_PHRASES",
     "ESCALATION_PHRASES",
 ]
-

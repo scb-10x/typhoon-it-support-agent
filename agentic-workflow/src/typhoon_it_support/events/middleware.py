@@ -7,17 +7,17 @@ from .emitter import EventEmitter, EventType
 
 def create_event_callbacks(emitter: EventEmitter) -> Dict[str, Any]:
     """Create callback functions for workflow event tracking.
-    
+
     These callbacks can be used with LangGraph's callback system
     to emit events at various points in the workflow execution.
-    
+
     Args:
         emitter: EventEmitter instance to emit events to.
-        
+
     Returns:
         Dictionary of callback functions.
     """
-    
+
     def on_workflow_start(data: Optional[Dict[str, Any]] = None) -> None:
         """Called when workflow starts."""
         emitter.emit(
@@ -25,9 +25,9 @@ def create_event_callbacks(emitter: EventEmitter) -> Dict[str, Any]:
             data={
                 "message": "Workflow execution started",
                 **(data or {}),
-            }
+            },
         )
-    
+
     def on_workflow_end(data: Optional[Dict[str, Any]] = None) -> None:
         """Called when workflow ends."""
         emitter.emit(
@@ -35,9 +35,9 @@ def create_event_callbacks(emitter: EventEmitter) -> Dict[str, Any]:
             data={
                 "message": "Workflow execution completed",
                 **(data or {}),
-            }
+            },
         )
-    
+
     def on_workflow_error(error: str, data: Optional[Dict[str, Any]] = None) -> None:
         """Called when workflow encounters an error."""
         emitter.emit(
@@ -46,9 +46,9 @@ def create_event_callbacks(emitter: EventEmitter) -> Dict[str, Any]:
                 "message": "Workflow execution error",
                 "error": error,
                 **(data or {}),
-            }
+            },
         )
-    
+
     def on_node_start(
         node_name: str,
         iteration: Optional[int] = None,
@@ -62,9 +62,9 @@ def create_event_callbacks(emitter: EventEmitter) -> Dict[str, Any]:
                 "message": f"Entering node: {node_name}",
                 "iteration": iteration,
                 **(data or {}),
-            }
+            },
         )
-    
+
     def on_node_end(
         node_name: str,
         iteration: Optional[int] = None,
@@ -78,9 +78,9 @@ def create_event_callbacks(emitter: EventEmitter) -> Dict[str, Any]:
                 "message": f"Completed node: {node_name}",
                 "iteration": iteration,
                 **(data or {}),
-            }
+            },
         )
-    
+
     def on_node_error(
         node_name: str,
         error: str,
@@ -96,9 +96,9 @@ def create_event_callbacks(emitter: EventEmitter) -> Dict[str, Any]:
                 "error": error,
                 "iteration": iteration,
                 **(data or {}),
-            }
+            },
         )
-    
+
     def on_tool_start(
         tool_name: str,
         iteration: Optional[int] = None,
@@ -112,9 +112,9 @@ def create_event_callbacks(emitter: EventEmitter) -> Dict[str, Any]:
                 "message": f"Executing tool: {tool_name}",
                 "iteration": iteration,
                 **(data or {}),
-            }
+            },
         )
-    
+
     def on_tool_end(
         tool_name: str,
         iteration: Optional[int] = None,
@@ -128,9 +128,9 @@ def create_event_callbacks(emitter: EventEmitter) -> Dict[str, Any]:
                 "message": f"Tool completed: {tool_name}",
                 "iteration": iteration,
                 **(data or {}),
-            }
+            },
         )
-    
+
     def on_tool_error(
         tool_name: str,
         error: str,
@@ -146,9 +146,9 @@ def create_event_callbacks(emitter: EventEmitter) -> Dict[str, Any]:
                 "error": error,
                 "iteration": iteration,
                 **(data or {}),
-            }
+            },
         )
-    
+
     def on_agent_thinking(
         iteration: Optional[int] = None,
         data: Optional[Dict[str, Any]] = None,
@@ -161,9 +161,9 @@ def create_event_callbacks(emitter: EventEmitter) -> Dict[str, Any]:
                 "message": "Agent is analyzing the request...",
                 "iteration": iteration,
                 **(data or {}),
-            }
+            },
         )
-    
+
     def on_agent_response(
         message: str,
         iteration: Optional[int] = None,
@@ -177,9 +177,9 @@ def create_event_callbacks(emitter: EventEmitter) -> Dict[str, Any]:
                 "message": message,
                 "iteration": iteration,
                 **(data or {}),
-            }
+            },
         )
-    
+
     def on_router_decision(
         decision: str,
         iteration: Optional[int] = None,
@@ -194,9 +194,9 @@ def create_event_callbacks(emitter: EventEmitter) -> Dict[str, Any]:
                 "iteration": iteration,
                 "decision": decision,
                 **(data or {}),
-            }
+            },
         )
-    
+
     def on_status(
         message: str,
         node_name: Optional[str] = None,
@@ -209,9 +209,9 @@ def create_event_callbacks(emitter: EventEmitter) -> Dict[str, Any]:
                 "node_name": node_name,
                 "message": message,
                 **(data or {}),
-            }
+            },
         )
-    
+
     def on_token(
         token: str,
         data: Optional[Dict[str, Any]] = None,
@@ -222,9 +222,9 @@ def create_event_callbacks(emitter: EventEmitter) -> Dict[str, Any]:
             data={
                 "message": token,
                 **(data or {}),
-            }
+            },
         )
-    
+
     def on_done(
         message: Optional[str] = None,
         data: Optional[Dict[str, Any]] = None,
@@ -235,9 +235,9 @@ def create_event_callbacks(emitter: EventEmitter) -> Dict[str, Any]:
             data={
                 "message": message or "Processing complete",
                 **(data or {}),
-            }
+            },
         )
-    
+
     return {
         "on_workflow_start": on_workflow_start,
         "on_workflow_end": on_workflow_end,
@@ -255,4 +255,3 @@ def create_event_callbacks(emitter: EventEmitter) -> Dict[str, Any]:
         "on_token": on_token,
         "on_done": on_done,
     }
-

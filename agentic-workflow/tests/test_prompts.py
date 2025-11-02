@@ -25,7 +25,9 @@ def test_router_prompt_exists():
 
 def test_router_prompt_content():
     """Test that router prompt contains routing logic."""
-    assert "routing" in ROUTER_SYSTEM_PROMPT.lower() or "router" in ROUTER_SYSTEM_PROMPT.lower()
+    assert (
+        "routing" in ROUTER_SYSTEM_PROMPT.lower()
+        or "router" in ROUTER_SYSTEM_PROMPT.lower()
+    )
     assert "continue" in ROUTER_SYSTEM_PROMPT
     assert "end" in ROUTER_SYSTEM_PROMPT
-

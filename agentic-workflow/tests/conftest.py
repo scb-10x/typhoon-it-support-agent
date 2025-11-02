@@ -28,6 +28,3 @@ def basic_state() -> AgentState:
         "iteration": 0,
         "next_action": "start",
     }
-
-
-

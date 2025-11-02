@@ -23,31 +23,37 @@ export const ChatInput = ({ input, isLoading, onInputChange, onSubmit }: ChatInp
     textarea.style.height = `${newHeight}px`;
   }, []);
 
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    onInputChange(value);
-    adjustTextareaHeight();
-  }, [onInputChange, adjustTextareaHeight]);
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const value = e.target.value;
+      onInputChange(value);
+      adjustTextareaHeight();
+    },
+    [onInputChange, adjustTextareaHeight]
+  );
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      if (input.trim() && !isLoading) {
-        const form = e.currentTarget.form;
-        if (form) {
-          form.requestSubmit();
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        if (input.trim() && !isLoading) {
+          const form = e.currentTarget.form;
+          if (form) {
+            form.requestSubmit();
+          }
         }
       }
-    }
-  }, [input, isLoading]);
+    },
+    [input, isLoading]
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
-    
+
     onSubmit(input);
     onInputChange("");
-    
+
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
     }
@@ -92,7 +98,12 @@ export const ChatInput = ({ input, isLoading, onInputChange, onSubmit }: ChatInp
                     aria-label="Clear input"
                   >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 )}
@@ -105,11 +116,7 @@ export const ChatInput = ({ input, isLoading, onInputChange, onSubmit }: ChatInp
                 >
                   {isLoading ? (
                     <div className="relative">
-                      <svg
-                        className="h-6 w-6 animate-spin"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
+                      <svg className="h-6 w-6 animate-spin" fill="none" viewBox="0 0 24 24">
                         <circle
                           className="opacity-25"
                           cx="12"
@@ -134,7 +141,9 @@ export const ChatInput = ({ input, isLoading, onInputChange, onSubmit }: ChatInp
                       >
                         <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
                       </svg>
-                      <span className="hidden sm:inline font-[var(--font-noto-sans-thai)]">ส่ง</span>
+                      <span className="hidden sm:inline font-[var(--font-noto-sans-thai)]">
+                        ส่ง
+                      </span>
                     </>
                   )}
                   {/* Pulse effect when ready to send */}
@@ -148,17 +157,23 @@ export const ChatInput = ({ input, isLoading, onInputChange, onSubmit }: ChatInp
         </form>
         <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-gray-400">
           <div className="flex items-center gap-1.5">
-            <kbd className="rounded bg-typhoon-darker px-1.5 py-0.5 font-mono text-xs border border-rhythm">Enter</kbd>
+            <kbd className="rounded bg-typhoon-darker px-1.5 py-0.5 font-mono text-xs border border-rhythm">
+              Enter
+            </kbd>
             <span>ส่ง</span>
           </div>
           <span className="hidden sm:inline">•</span>
           <div className="flex items-center gap-1.5">
-            <kbd className="rounded bg-typhoon-darker px-1.5 py-0.5 font-mono text-xs border border-rhythm">Shift+Enter</kbd>
+            <kbd className="rounded bg-typhoon-darker px-1.5 py-0.5 font-mono text-xs border border-rhythm">
+              Shift+Enter
+            </kbd>
             <span className="hidden sm:inline">บรรทัดใหม่</span>
           </div>
           <span className="hidden sm:inline">•</span>
           <div className="flex items-center gap-1.5">
-            <kbd className="rounded bg-typhoon-darker px-1.5 py-0.5 font-mono text-xs border border-rhythm">ESC</kbd>
+            <kbd className="rounded bg-typhoon-darker px-1.5 py-0.5 font-mono text-xs border border-rhythm">
+              ESC
+            </kbd>
             <span>ล้าง</span>
           </div>
           <span className="hidden sm:inline">•</span>
@@ -168,4 +183,3 @@ export const ChatInput = ({ input, isLoading, onInputChange, onSubmit }: ChatInp
     </div>
   );
 };
-

@@ -22,7 +22,7 @@ export interface WorkflowEvent {
   node_name?: string;
   tool_name?: string;
   message?: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
   error?: string;
   iteration?: number;
 }
@@ -31,4 +31,3 @@ export interface CodeBlockProps {
   language?: string;
   value: string;
 }
-

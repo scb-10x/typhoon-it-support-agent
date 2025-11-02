@@ -19,7 +19,7 @@ def main():
     print("3. Generate embeddings")
     print("4. Create FAISS index")
     print()
-    
+
     result = rebuild_vector_store()
     print(result)
     print()
@@ -28,4 +28,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

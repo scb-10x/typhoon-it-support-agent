@@ -567,4 +567,3 @@ Remember: There are no stupid questions. IT is here to help you succeed. Don't h
 *This guide is regularly updated based on employee feedback.*
 *Last Updated: October 2025*
 *Version: 1.0*
-

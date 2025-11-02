@@ -445,4 +445,3 @@
 ---
 
 *This guide is regularly updated. Last update: October 2025*
-

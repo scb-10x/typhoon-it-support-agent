@@ -43,4 +43,3 @@ export const CodeBlock = ({ language, value }: CodeBlockProps) => {
     </div>
   );
 };
-

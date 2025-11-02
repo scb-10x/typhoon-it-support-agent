@@ -5,7 +5,7 @@
  */
 
 import { useState, useEffect } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { useChat } from "./chat/useChat";
 import { useChatScroll } from "./chat/useChatScroll";
 import { ChatMessage } from "./chat/ChatMessage";
@@ -17,7 +17,8 @@ export default function Chat() {
   const [showWorkflowPanel, setShowWorkflowPanel] = useState(false);
 
   const { messages, isLoading, workflowEvents, sendMessage, clearChat } = useChat();
-  const { messagesEndRef, messagesContainerRef, showScrollButton, scrollToBottom } = useChatScroll();
+  const { messagesEndRef, messagesContainerRef, showScrollButton, scrollToBottom } =
+    useChatScroll();
 
   useEffect(() => {
     scrollToBottom();
@@ -85,7 +86,12 @@ export default function Chat() {
                 aria-label="Toggle workflow panel"
               >
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  />
                 </svg>
                 <span className="hidden lg:inline">Workflow</span>
                 {workflowEvents.length > 0 && (
@@ -100,8 +106,18 @@ export default function Chat() {
                 className="group flex items-center gap-1.5 sm:gap-2 rounded-xl border border-rhythm bg-typhoon-darker/80 px-2.5 sm:px-4 py-2 text-sm font-medium text-gray-200 shadow-sm transition-all hover:border-typhoon-primary hover:bg-typhoon-darker hover:shadow-md active:scale-95"
                 aria-label="Clear chat"
               >
-                <svg className="h-4 w-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                <svg
+                  className="h-4 w-4 transition-transform group-hover:rotate-180"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
                 </svg>
                 <span className="hidden lg:inline">ล้าง</span>
               </button>
@@ -115,12 +131,7 @@ export default function Chat() {
             {messages.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center py-16 text-center animate-in fade-in duration-700">
                 <div className="mb-8 flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-typhoon-primary to-lavender text-white shadow-2xl ring-4 ring-lavender/30 animate-in zoom-in duration-700">
-                  <svg
-                    className="h-12 w-12"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -153,10 +164,22 @@ export default function Chat() {
                         style={{ animationDelay: `${idx * 100}ms` }}
                         className="group flex items-start gap-3 rounded-xl border-2 border-rhythm bg-typhoon-darker/50 p-4 text-left text-sm text-gray-200 shadow-sm transition-all hover:border-typhoon-primary hover:shadow-lg hover:-translate-y-0.5 active:scale-95 animate-in fade-in slide-in-from-bottom-4 duration-500 font-[var(--font-pridi)]"
                       >
-                        <span className="text-2xl transition-transform group-hover:scale-110">{suggestion.icon}</span>
+                        <span className="text-2xl transition-transform group-hover:scale-110">
+                          {suggestion.icon}
+                        </span>
                         <span className="flex-1 pt-1">{suggestion.text}</span>
-                        <svg className="h-5 w-5 text-gray-400 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        <svg
+                          className="h-5 w-5 text-gray-400 transition-transform group-hover:translate-x-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
                         </svg>
                       </button>
                     ))}
@@ -181,8 +204,18 @@ export default function Chat() {
                 className="group flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-gradient-to-br from-typhoon-primary to-lavender text-white shadow-xl ring-2 ring-lavender/30 transition-all hover:shadow-2xl hover:scale-110 active:scale-95"
                 aria-label="Scroll to bottom"
               >
-                <svg className="h-5 w-5 sm:h-6 sm:w-6 transition-transform group-hover:translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                <svg
+                  className="h-5 w-5 sm:h-6 sm:w-6 transition-transform group-hover:translate-y-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                  />
                 </svg>
               </button>
             </div>

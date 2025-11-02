@@ -1,13 +1,13 @@
 """State definitions for the agent workflow."""
 
-from typing import Annotated, TypedDict, Optional, List, Dict
+from typing import Annotated, Dict, List, Optional, TypedDict
 
 from langgraph.graph.message import add_messages
 
 
 class AgentState(TypedDict):
     """State for the agent workflow.
-    
+
     Attributes:
         messages: List of messages in the conversation.
         iteration: Current iteration count.
@@ -23,4 +23,3 @@ class AgentState(TypedDict):
     active_tickets: List[int]
     searched_documents: List[str]
     user_info: Optional[Dict[str, str]]
-

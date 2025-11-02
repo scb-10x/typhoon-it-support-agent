@@ -21,16 +21,19 @@ Modern chat interface for the Typhoon IT Support system built with Next.js 16, R
 ### Installation
 
 1. Install dependencies:
+
 ```bash
 pnpm install
 ```
 
 2. Create environment file:
+
 ```bash
 cp .env.local.example .env.local
 ```
 
 3. Update `.env.local` with your backend URL (default is `http://localhost:8000`):
+
 ```
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
@@ -135,6 +138,7 @@ Response:
 If you see "backend server is running" errors:
 
 1. Make sure the FastAPI backend is running:
+
    ```bash
    cd ../agentic-workflow
    uv run python -m src.typhoon_it_support.api.run
@@ -149,6 +153,7 @@ If you see "backend server is running" errors:
 If you encounter build errors:
 
 1. Clear Next.js cache:
+
    ```bash
    rm -rf .next
    ```

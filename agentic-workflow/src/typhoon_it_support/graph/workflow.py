@@ -19,11 +19,11 @@ def route_after_agent(state: AgentState) -> str:
         Next node name: 'tools' or END.
     """
     settings = get_settings()
-    
+
     # Check iteration limit
     if state.get("iteration", 0) >= settings.max_iterations:
         return END
-    
+
     # Route based on agent's decision
     next_action = state.get("next_action", "end")
     if next_action == "tools":
@@ -37,7 +37,7 @@ def create_workflow() -> StateGraph:
     Implements a simple agent loop pattern:
     - agent: Decides to call tools OR provide final answer
     - tools: Executes tool calls and returns to agent
-    
+
     The agent is fully responsible for deciding when to stop the loop
     by not calling tools and providing a final answer instead.
 

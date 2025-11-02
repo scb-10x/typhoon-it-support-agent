@@ -37,4 +37,3 @@ def test_get_settings_singleton():
     settings1 = get_settings()
     settings2 = get_settings()
     assert settings1 is settings2
-

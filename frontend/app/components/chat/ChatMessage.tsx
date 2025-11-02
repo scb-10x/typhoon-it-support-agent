@@ -85,9 +85,18 @@ export const ChatMessage = ({ message, index }: ChatMessageProps) => {
                     </span>
                   </div>
                   <div className="flex gap-2">
-                    <div className="h-2 w-2 animate-bounce rounded-full bg-typhoon-primary" style={{ animationDelay: "0ms" }}></div>
-                    <div className="h-2 w-2 animate-bounce rounded-full bg-lavender" style={{ animationDelay: "150ms" }}></div>
-                    <div className="h-2 w-2 animate-bounce rounded-full bg-kobi" style={{ animationDelay: "300ms" }}></div>
+                    <div
+                      className="h-2 w-2 animate-bounce rounded-full bg-typhoon-primary"
+                      style={{ animationDelay: "0ms" }}
+                    ></div>
+                    <div
+                      className="h-2 w-2 animate-bounce rounded-full bg-lavender"
+                      style={{ animationDelay: "150ms" }}
+                    ></div>
+                    <div
+                      className="h-2 w-2 animate-bounce rounded-full bg-kobi"
+                      style={{ animationDelay: "300ms" }}
+                    ></div>
                   </div>
                 </div>
               ) : (
@@ -113,4 +122,3 @@ export const ChatMessage = ({ message, index }: ChatMessageProps) => {
     </div>
   );
 };
-

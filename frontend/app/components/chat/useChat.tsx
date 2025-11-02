@@ -89,18 +89,15 @@ export const useChat = () => {
 
                 // Handle ticket created event - show toast
                 if (data.type === "ticket_created") {
-                  toast.success(
-                    `🎫 ${data.data?.message || "Ticket created successfully"}`,
-                    {
-                      duration: 5000,
-                      position: "top-right",
-                      style: {
-                        background: "#1a1d2e",
-                        color: "#fff",
-                        border: "1px solid #6366f1",
-                      },
-                    }
-                  );
+                  toast.success(`🎫 ${data.data?.message || "Ticket created successfully"}`, {
+                    duration: 5000,
+                    position: "top-right",
+                    style: {
+                      background: "#1a1d2e",
+                      color: "#fff",
+                      border: "1px solid #6366f1",
+                    },
+                  });
                 }
               }
 
@@ -128,7 +125,8 @@ export const useChat = () => {
                   const newMessages = [...prev];
                   newMessages[newMessages.length - 1] = {
                     role: "assistant",
-                    content: "ขออภัยครับ เกิดข้อผิดพลาด: " + (data.data?.error || data.data?.message),
+                    content:
+                      "ขออภัยครับ เกิดข้อผิดพลาด: " + (data.data?.error || data.data?.message),
                     isStreaming: false,
                   };
                   return newMessages;
@@ -184,4 +182,3 @@ export const useChat = () => {
     clearChat,
   };
 };
-

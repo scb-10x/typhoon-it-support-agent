@@ -1,8 +1,8 @@
 """Tests for router node."""
 
-from langchain_core.messages import AIMessage, HumanMessage
-
+from langchain_core.messages import AIMessage
 from src.typhoon_it_support.agents.router_node import router_node, should_continue
+
 from src.typhoon_it_support.models import AgentState
 
 
@@ -81,4 +81,3 @@ def test_should_continue_escalate():
     }
     result = should_continue(state)
     assert result == "escalate"
-

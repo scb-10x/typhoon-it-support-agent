@@ -1,26 +1,27 @@
 """Initialize demo tickets for showcase."""
 
 from datetime import datetime, timedelta
+
+from ..config.user_context import get_current_user
 from ..tools.ticket_tools import (
-    _mock_tickets, 
-    _ticket_counter, 
+    AVAILABLE_AGENTS,
     _calculate_sla_targets,
     _check_sla_breach,
-    AVAILABLE_AGENTS
+    _mock_tickets,
+    _ticket_counter,
 )
-from ..config.user_context import get_current_user
 
 
 def initialize_demo_tickets():
     """Add sample tickets for demo purposes."""
     global _ticket_counter
-    
+
     # Clear existing tickets
     _mock_tickets.clear()
-    
+
     # Get current user for realistic demo data
     current_user = get_current_user()
-    
+
     # Sample tickets with varied statuses and priorities
     sample_tickets = [
         {
@@ -36,7 +37,9 @@ def initialize_demo_tickets():
                     "author": "น้องเทค (IT Support)",
                     "body": "สวัสดีค่ะคุณชาย ดิฉันได้ส่งคำขอจัดซื้อ license Canva Pro ไปยังฝ่ายจัดซื้อแล้วนะคะ รอประมาณ 2-3 วันทำการค่ะ",
                     "public": True,
-                    "created_at": (datetime.now() - timedelta(hours=2, minutes=30)).isoformat(),
+                    "created_at": (
+                        datetime.now() - timedelta(hours=2, minutes=30)
+                    ).isoformat(),
                 }
             ],
         },
@@ -53,7 +56,9 @@ def initialize_demo_tickets():
                     "author": "น้องเทค (IT Support)",
                     "body": "กำลังตรวจสอบบัญชี email ของคุณ กรุณารอสักครู่ค่ะ",
                     "public": True,
-                    "created_at": (datetime.now() - timedelta(hours=1, minutes=30)).isoformat(),
+                    "created_at": (
+                        datetime.now() - timedelta(hours=1, minutes=30)
+                    ).isoformat(),
                 }
             ],
         },
@@ -70,14 +75,18 @@ def initialize_demo_tickets():
                     "author": "น้องเทค (IT Support)",
                     "body": "ตรวจสอบแล้วพบว่า bandwidth upload ถูกจำกัดที่ router ค่ะ ดิฉันได้ปรับตั้งค่าให้เพิ่มขึ้นแล้ว ลองใช้งานดูนะคะ",
                     "public": True,
-                    "created_at": (datetime.now() - timedelta(days=1, hours=20)).isoformat(),
+                    "created_at": (
+                        datetime.now() - timedelta(days=1, hours=20)
+                    ).isoformat(),
                 },
                 {
                     "author": current_user.display_name,
                     "body": "ขอบคุณครับ เร็วขึ้นมากเลยครับ",
                     "public": True,
-                    "created_at": (datetime.now() - timedelta(days=1, hours=18)).isoformat(),
-                }
+                    "created_at": (
+                        datetime.now() - timedelta(days=1, hours=18)
+                    ).isoformat(),
+                },
             ],
         },
         {
@@ -113,14 +122,18 @@ def initialize_demo_tickets():
                     "author": "น้องเทค (IT Support)",
                     "body": "ทีมงานกำลังไปตรวจสอบที่เครื่องพิมพ์ค่ะ",
                     "public": True,
-                    "created_at": (datetime.now() - timedelta(hours=3, minutes=45)).isoformat(),
+                    "created_at": (
+                        datetime.now() - timedelta(hours=3, minutes=45)
+                    ).isoformat(),
                 },
                 {
                     "author": "น้องเทค (IT Support)",
                     "body": "พบว่ากระดาษติดในเครื่อง กำลังดำเนินการแก้ไขค่ะ",
                     "public": True,
-                    "created_at": (datetime.now() - timedelta(hours=3, minutes=30)).isoformat(),
-                }
+                    "created_at": (
+                        datetime.now() - timedelta(hours=3, minutes=30)
+                    ).isoformat(),
+                },
             ],
         },
         {
@@ -136,14 +149,18 @@ def initialize_demo_tickets():
                     "author": "น้องเทค (IT Support)",
                     "body": "ได้ตั้งค่า VPN account เรียบร้อยแล้วค่ะ กรุณาตรวจสอบ email สำหรับ credentials",
                     "public": True,
-                    "created_at": (datetime.now() - timedelta(days=1, hours=20)).isoformat(),
+                    "created_at": (
+                        datetime.now() - timedelta(days=1, hours=20)
+                    ).isoformat(),
                 },
                 {
                     "author": "น้องเทค (IT Support)",
                     "body": "ปิด ticket เนื่องจากผู้ใช้ยืนยันว่าใช้งานได้แล้วค่ะ",
                     "public": True,
-                    "created_at": (datetime.now() - timedelta(days=1, hours=18)).isoformat(),
-                }
+                    "created_at": (
+                        datetime.now() - timedelta(days=1, hours=18)
+                    ).isoformat(),
+                },
             ],
         },
         {
@@ -169,7 +186,9 @@ def initialize_demo_tickets():
                     "author": "น้องเทค (IT Support)",
                     "body": "ได้ทำการ reset รหัสผ่านเรียบร้อยค่ะ รหัสผ่านชั่วคราวคือ: TempPass123! กรุณาเปลี่ยนรหัสผ่านหลังจาก login ครั้งแรกนะคะ",
                     "public": True,
-                    "created_at": (datetime.now() - timedelta(hours=7, minutes=45)).isoformat(),
+                    "created_at": (
+                        datetime.now() - timedelta(hours=7, minutes=45)
+                    ).isoformat(),
                 }
             ],
         },
@@ -186,7 +205,9 @@ def initialize_demo_tickets():
                     "author": "น้องเทค (IT Support)",
                     "body": "ได้ส่งคำขออนุมัติเพิ่ม storage ไปยังฝ่าย IT Admin แล้วค่ะ",
                     "public": True,
-                    "created_at": (datetime.now() - timedelta(days=1, hours=10)).isoformat(),
+                    "created_at": (
+                        datetime.now() - timedelta(days=1, hours=10)
+                    ).isoformat(),
                 }
             ],
         },
@@ -203,7 +224,9 @@ def initialize_demo_tickets():
                     "author": "น้องเทค (IT Support)",
                     "body": "ปัญหาเกิดจาก permission ของ Windows ค่ะ ได้แก้ไขโดยอนุญาต Teams ให้ capture screen แล้วค่ะ",
                     "public": True,
-                    "created_at": (datetime.now() - timedelta(days=2, hours=22)).isoformat(),
+                    "created_at": (
+                        datetime.now() - timedelta(days=2, hours=22)
+                    ).isoformat(),
                 }
             ],
         },
@@ -218,34 +241,40 @@ def initialize_demo_tickets():
             "comments": [],
         },
     ]
-    
+
     # Add tickets to the system
     for idx, ticket_data in enumerate(sample_tickets):
         ticket_id = _ticket_counter["value"]
         _ticket_counter["value"] += 1
-        
+
         created_at = ticket_data["created_at"]
-        
+
         # Calculate SLA targets
         sla_targets = _calculate_sla_targets(ticket_data["priority"], created_at)
-        
+
         # Determine first response and resolution times
         comments = ticket_data.get("comments", [])
         first_response_at = comments[0]["created_at"] if comments else None
-        resolved_at = created_at if ticket_data["status"] in ["solved", "closed"] else None
-        
+        resolved_at = (
+            created_at if ticket_data["status"] in ["solved", "closed"] else None
+        )
+
         # Assign to agents based on category
         assignee = None
         category = "other"
         tags = []
-        
+
         # Smart categorization and assignment based on subject
         subject_lower = ticket_data["subject"].lower()
         if "email" in subject_lower or "เข้าสู่ระบบ" in subject_lower:
             category = "email"
             assignee = AVAILABLE_AGENTS[0]
             tags = ["email", "login"]
-        elif "internet" in subject_lower or "wifi" in subject_lower or "network" in subject_lower:
+        elif (
+            "internet" in subject_lower
+            or "wifi" in subject_lower
+            or "network" in subject_lower
+        ):
             category = "network"
             assignee = AVAILABLE_AGENTS[2]
             tags = ["network", "connectivity"]
@@ -261,7 +290,11 @@ def initialize_demo_tickets():
             category = "account_access"
             assignee = AVAILABLE_AGENTS[1]
             tags = ["password", "account"]
-        elif "software" in subject_lower or "canva" in subject_lower or "adobe" in subject_lower:
+        elif (
+            "software" in subject_lower
+            or "canva" in subject_lower
+            or "adobe" in subject_lower
+        ):
             category = "software"
             assignee = AVAILABLE_AGENTS[0]
             tags = ["software", "license"]
@@ -281,23 +314,31 @@ def initialize_demo_tickets():
             category = "software"
             assignee = AVAILABLE_AGENTS[0]
             tags = ["teams", "collaboration"]
-        
+
         # Add priority tag
         if ticket_data["priority"] == "urgent":
             tags.append("urgent")
-        
+
         # Calculate due date based on priority and status
         due_date = None
         if ticket_data["status"] not in ["solved", "closed"]:
             if ticket_data["priority"] == "urgent":
-                due_date = (datetime.fromisoformat(created_at) + timedelta(hours=4)).isoformat()
+                due_date = (
+                    datetime.fromisoformat(created_at) + timedelta(hours=4)
+                ).isoformat()
             elif ticket_data["priority"] == "high":
-                due_date = (datetime.fromisoformat(created_at) + timedelta(hours=8)).isoformat()
+                due_date = (
+                    datetime.fromisoformat(created_at) + timedelta(hours=8)
+                ).isoformat()
             elif ticket_data["priority"] == "normal":
-                due_date = (datetime.fromisoformat(created_at) + timedelta(days=1)).isoformat()
+                due_date = (
+                    datetime.fromisoformat(created_at) + timedelta(days=1)
+                ).isoformat()
             else:
-                due_date = (datetime.fromisoformat(created_at) + timedelta(days=2)).isoformat()
-        
+                due_date = (
+                    datetime.fromisoformat(created_at) + timedelta(days=2)
+                ).isoformat()
+
         ticket = {
             "id": ticket_id,
             "subject": ticket_data["subject"],
@@ -318,7 +359,9 @@ def initialize_demo_tickets():
             "resolved_at": resolved_at,
             "sla_first_response_due": sla_targets["first_response_due"],
             "sla_resolution_due": sla_targets["resolution_due"],
-            "sla_breach": _check_sla_breach(created_at, ticket_data["priority"], first_response_at, resolved_at),
+            "sla_breach": _check_sla_breach(
+                created_at, ticket_data["priority"], first_response_at, resolved_at
+            ),
             "history": [
                 {
                     "timestamp": created_at,
@@ -328,18 +371,18 @@ def initialize_demo_tickets():
                 }
             ],
         }
-        
+
         # Add assignment history if assigned
         if assignee:
-            ticket["history"].append({
-                "timestamp": created_at,
-                "action": "assigned",
-                "actor": "System",
-                "changes": {"assignee": {"old": None, "new": assignee["name"]}},
-            })
-        
+            ticket["history"].append(
+                {
+                    "timestamp": created_at,
+                    "action": "assigned",
+                    "actor": "System",
+                    "changes": {"assignee": {"old": None, "new": assignee["name"]}},
+                }
+            )
+
         _mock_tickets[ticket_id] = ticket
-    
+
     return len(_mock_tickets)
-
-

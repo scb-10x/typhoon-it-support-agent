@@ -41,7 +41,7 @@ interface HistoryEntry {
   timestamp: string;
   action: string;
   actor: string;
-  changes: any;
+  changes: Record<string, unknown>;
 }
 
 interface TicketStats {
@@ -104,9 +104,10 @@ export default function Tickets() {
   const [showBulkActions, setShowBulkActions] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"created_at" | "updated_at" | "priority" | "status">("created_at");
+  const [sortBy, setSortBy] = useState<"created_at" | "updated_at" | "priority" | "status">(
+    "created_at"
+  );
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [showQuickActions, setShowQuickActions] = useState(false);
 
   const fetchTickets = useCallback(async () => {
     setIsLoading(true);
@@ -115,7 +116,7 @@ export default function Tickets() {
     if (priorityFilter !== "all") params.append("priority", priorityFilter);
     if (categoryFilter !== "all") params.append("category", categoryFilter);
     if (assigneeFilter !== "all") params.append("assignee_id", assigneeFilter);
-    
+
     const response = await fetch(`${API_URL}/tickets/search/advanced?${params}`);
     const data = await response.json();
     setTickets(data.tickets || []);
@@ -135,9 +136,19 @@ export default function Tickets() {
   }, []);
 
   useEffect(() => {
-    fetchTickets();
-    fetchStats();
-    fetchAgents();
+    let mounted = true;
+
+    const loadData = async () => {
+      if (mounted) {
+        await Promise.all([fetchTickets(), fetchStats(), fetchAgents()]);
+      }
+    };
+
+    loadData();
+
+    return () => {
+      mounted = false;
+    };
   }, [fetchTickets, fetchStats, fetchAgents]);
 
   useEffect(() => {
@@ -176,9 +187,9 @@ export default function Tickets() {
   const handleCreateTicket = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsCreating(true);
-    
+
     const formData = new FormData(e.currentTarget);
-    
+
     const response = await fetch(`${API_URL}/tickets`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -194,16 +205,16 @@ export default function Tickets() {
     if (response.ok) {
       const data = await response.json();
       const newTicket = data.ticket;
-      
+
       setShowCreateModal(false);
       setCreatedTicket(newTicket);
       setShowSuccessNotification(true);
-      
+
       await fetchTickets();
       await fetchStats();
-      
+
       setSelectedTicket(newTicket);
-      
+
       setTimeout(() => {
         setShowSuccessNotification(false);
       }, 5000);
@@ -252,7 +263,7 @@ export default function Tickets() {
     setSelectedTickets(newSelection);
   };
 
-  const handleBulkUpdate = async (updates: any) => {
+  const handleBulkUpdate = async (updates: Record<string, unknown>) => {
     const response = await fetch(`${API_URL}/tickets/bulk/update`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -275,12 +286,8 @@ export default function Tickets() {
     if (statusFilter !== "all") params.append("status", statusFilter);
     if (priorityFilter !== "all") params.append("priority", priorityFilter);
     if (categoryFilter !== "all") params.append("category", categoryFilter);
-    
-    window.open(`${API_URL}/tickets/export/csv?${params}`, "_blank");
-  };
 
-  const isSLABreached = (ticket: Ticket) => {
-    return ticket.sla_breach?.resolution_breached;
+    window.open(`${API_URL}/tickets/export/csv?${params}`, "_blank");
   };
 
   const filteredAndSortedTickets = useMemo(() => {
@@ -288,13 +295,14 @@ export default function Tickets() {
 
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter((ticket) =>
-        ticket.subject.toLowerCase().includes(query) ||
-        ticket.description.toLowerCase().includes(query) ||
-        ticket.requester_name.toLowerCase().includes(query) ||
-        ticket.requester_email.toLowerCase().includes(query) ||
-        ticket.id.toString().includes(query) ||
-        ticket.tags.some(tag => tag.toLowerCase().includes(query))
+      filtered = filtered.filter(
+        (ticket) =>
+          ticket.subject.toLowerCase().includes(query) ||
+          ticket.description.toLowerCase().includes(query) ||
+          ticket.requester_name.toLowerCase().includes(query) ||
+          ticket.requester_email.toLowerCase().includes(query) ||
+          ticket.id.toString().includes(query) ||
+          ticket.tags.some((tag) => tag.toLowerCase().includes(query))
       );
     }
 
@@ -343,29 +351,39 @@ export default function Tickets() {
       if (e.key === "Escape") {
         setShowCreateModal(false);
         setShowHistoryModal(false);
-        setShowQuickActions(false);
         setSelectedTicket(null);
       }
 
       if (!showCreateModal && !showHistoryModal && filteredAndSortedTickets.length > 0) {
-        const currentIndex = filteredAndSortedTickets.findIndex(t => t.id === selectedTicket?.id);
+        const currentIndex = filteredAndSortedTickets.findIndex((t) => t.id === selectedTicket?.id);
         if (e.key === "ArrowDown" && currentIndex < filteredAndSortedTickets.length - 1) {
           e.preventDefault();
           const nextTicket = filteredAndSortedTickets[currentIndex + 1];
           setSelectedTicket(nextTicket);
-          document.getElementById(`ticket-${nextTicket.id}`)?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          document
+            .getElementById(`ticket-${nextTicket.id}`)
+            ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
         } else if (e.key === "ArrowUp" && currentIndex > 0) {
           e.preventDefault();
           const prevTicket = filteredAndSortedTickets[currentIndex - 1];
           setSelectedTicket(prevTicket);
-          document.getElementById(`ticket-${prevTicket.id}`)?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          document
+            .getElementById(`ticket-${prevTicket.id}`)
+            ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
       }
     };
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [selectedTicket, filteredAndSortedTickets, showCreateModal, showHistoryModal, fetchTickets, fetchStats]);
+  }, [
+    selectedTicket,
+    filteredAndSortedTickets,
+    showCreateModal,
+    showHistoryModal,
+    fetchTickets,
+    fetchStats,
+  ]);
 
   const getSLATimeRemaining = (ticket: Ticket) => {
     const now = new Date();
@@ -394,8 +412,12 @@ export default function Tickets() {
     setSearchQuery("");
   };
 
-  const hasActiveFilters = statusFilter !== "all" || priorityFilter !== "all" || 
-    categoryFilter !== "all" || assigneeFilter !== "all" || searchQuery.trim() !== "";
+  const hasActiveFilters =
+    statusFilter !== "all" ||
+    priorityFilter !== "all" ||
+    categoryFilter !== "all" ||
+    assigneeFilter !== "all" ||
+    searchQuery.trim() !== "";
 
   return (
     <div className="flex h-screen w-full bg-gradient-to-br from-typhoon-dark via-typhoon-darker to-black">
@@ -406,16 +428,17 @@ export default function Tickets() {
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-typhoon-primary to-lavender text-white shadow-lg ring-2 ring-lavender/20">
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
                 </svg>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-white">
-                  ระบบจัดการ Ticket
-                </h1>
-                <p className="text-xs text-gray-400">
-                  ดูและจัดการคำขอสนับสนุน
-                </p>
+                <h1 className="text-xl font-bold text-white">ระบบจัดการ Ticket</h1>
+                <p className="text-xs text-gray-400">ดูและจัดการคำขอสนับสนุน</p>
               </div>
             </div>
             <div className="flex gap-2">
@@ -427,8 +450,18 @@ export default function Tickets() {
                 title="Refresh (Ctrl/⌘+R)"
                 className="group flex items-center gap-2 rounded-xl border-2 border-rhythm px-3 py-2 text-sm font-medium text-white transition-all hover:border-lavender hover:bg-lavender/10"
               >
-                <svg className="h-5 w-5 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                <svg
+                  className="h-5 w-5 transition-transform group-hover:rotate-180"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
                 </svg>
               </button>
               <button
@@ -436,7 +469,12 @@ export default function Tickets() {
                 className="group flex items-center gap-2 rounded-xl border-2 border-rhythm px-4 py-2 text-sm font-medium text-white transition-all hover:border-lavender hover:bg-lavender/10"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
                 </svg>
                 <span className="hidden md:inline">Export CSV</span>
               </button>
@@ -446,7 +484,12 @@ export default function Tickets() {
                 className="group flex items-center gap-2 rounded-xl bg-gradient-to-br from-typhoon-primary to-lavender px-4 py-2 text-sm font-medium text-white shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
                 </svg>
                 <span>สร้าง Ticket</span>
               </button>
@@ -471,15 +514,21 @@ export default function Tickets() {
                   </div>
                   <div className="rounded-lg bg-gradient-to-br from-desert/20 to-desert/10 p-3 border border-desert/20">
                     <div className="text-xs text-gray-400">Pending</div>
-                    <div className="text-2xl font-bold text-desert">{stats.by_status.pending || 0}</div>
+                    <div className="text-2xl font-bold text-desert">
+                      {stats.by_status.pending || 0}
+                    </div>
                   </div>
                   <div className="rounded-lg bg-gradient-to-br from-green-500/20 to-green-600/10 p-3 border border-green-500/20">
                     <div className="text-xs text-gray-400">Solved</div>
-                    <div className="text-2xl font-bold text-green-400">{stats.by_status.solved || 0}</div>
+                    <div className="text-2xl font-bold text-green-400">
+                      {stats.by_status.solved || 0}
+                    </div>
                   </div>
                   <div className="rounded-lg bg-gradient-to-br from-cerulean/20 to-cerulean/10 p-3 border border-cerulean/20">
                     <div className="text-xs text-gray-400">Urgent</div>
-                    <div className="text-2xl font-bold text-cerulean">{stats.by_priority.urgent || 0}</div>
+                    <div className="text-2xl font-bold text-cerulean">
+                      {stats.by_priority.urgent || 0}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -497,8 +546,18 @@ export default function Tickets() {
                   placeholder="ค้นหา ticket (Ctrl/⌘+K)"
                   className="w-full rounded-lg border-2 border-rhythm bg-typhoon-dark px-10 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-typhoon-primary focus:outline-none"
                 />
-                <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <svg
+                  className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
                 {searchQuery && (
                   <button
@@ -506,7 +565,12 @@ export default function Tickets() {
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
                   >
                     <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 )}
@@ -515,12 +579,26 @@ export default function Tickets() {
               {/* Sort & Filters */}
               <div className="flex items-center gap-2 flex-wrap">
                 <div className="flex items-center gap-2 bg-typhoon-dark rounded-lg px-3 py-1.5 border border-rhythm">
-                  <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                  <svg
+                    className="h-4 w-4 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                    />
                   </svg>
                   <select
                     value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as any)}
+                    onChange={(e) =>
+                      setSortBy(
+                        e.target.value as "created_at" | "updated_at" | "priority" | "status"
+                      )
+                    }
                     className="bg-transparent text-xs text-white focus:outline-none pr-6"
                   >
                     <option value="created_at">สร้างล่าสุด</option>
@@ -568,7 +646,9 @@ export default function Tickets() {
                 >
                   <option value="all">หมวดหมู่: ทั้งหมด</option>
                   {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-                    <option key={key} value={key}>{label}</option>
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
                   ))}
                 </select>
 
@@ -580,7 +660,9 @@ export default function Tickets() {
                   <option value="all">ผู้รับผิดชอบ: ทั้งหมด</option>
                   <option value="">ยังไม่ได้มอบหมาย</option>
                   {agents.map((agent) => (
-                    <option key={agent.id} value={agent.id}>{agent.name}</option>
+                    <option key={agent.id} value={agent.id}>
+                      {agent.name}
+                    </option>
                   ))}
                 </select>
 
@@ -590,7 +672,12 @@ export default function Tickets() {
                     className="text-xs text-gray-400 hover:text-white flex items-center gap-1 px-2 py-1 rounded hover:bg-rhythm transition-colors"
                   >
                     <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                     ล้างฟิลเตอร์
                   </button>
@@ -604,7 +691,9 @@ export default function Tickets() {
                 </span>
                 {selectedTickets.size > 0 && (
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-300">เลือก {selectedTickets.size} รายการ</span>
+                    <span className="text-sm text-gray-300">
+                      เลือก {selectedTickets.size} รายการ
+                    </span>
                     <button
                       onClick={() => setShowBulkActions(!showBulkActions)}
                       className="rounded-lg bg-lavender px-3 py-1 text-xs font-medium text-white hover:bg-lavender/80"
@@ -666,8 +755,18 @@ export default function Tickets() {
               ) : filteredAndSortedTickets.length === 0 ? (
                 <div className="flex h-full items-center justify-center">
                   <div className="text-center text-gray-400">
-                    <svg className="mx-auto mb-2 h-12 w-12 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    <svg
+                      className="mx-auto mb-2 h-12 w-12 opacity-50"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
                     </svg>
                     <p className="text-lg font-semibold mb-1">ไม่พบ ticket</p>
                     {hasActiveFilters ? (
@@ -682,100 +781,139 @@ export default function Tickets() {
                   {filteredAndSortedTickets.map((ticket) => {
                     const slaTime = getSLATimeRemaining(ticket);
                     return (
-                    <div
-                      key={ticket.id}
-                      id={`ticket-${ticket.id}`}
-                      onClick={() => setSelectedTicket(ticket)}
-                      className={`cursor-pointer rounded-lg border-2 bg-typhoon-dark/80 p-4 shadow-sm transition-all hover:shadow-md ${
-                        selectedTicket?.id === ticket.id
-                          ? "border-typhoon-primary ring-2 ring-lavender/30"
-                          : "border-rhythm"
-                      } ${
-                        createdTicket?.id === ticket.id
-                          ? "animate-in fade-in slide-in-from-bottom-4 duration-500 ring-4 ring-green-400/30"
-                          : ""
-                      }`}
-                    >
-                      <div className="mb-2 flex items-start justify-between gap-2">
-                        <div className="flex items-start gap-2 flex-1">
-                          <input
-                            type="checkbox"
-                            checked={selectedTickets.has(ticket.id)}
-                            onChange={(e) => {
-                              e.stopPropagation();
-                              toggleTicketSelection(ticket.id);
-                            }}
-                            className="mt-1 h-4 w-4 rounded border-rhythm bg-typhoon-darker text-lavender focus:ring-lavender"
-                          />
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-sm font-semibold text-gray-400">
-                                #{ticket.id}
-                              </span>
-                              <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[ticket.status]}`}>
-                                {ticket.status}
-                              </span>
-                              <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${PRIORITY_COLORS[ticket.priority]}`}>
-                                {ticket.priority}
-                              </span>
-                              {ticket.status !== "solved" && ticket.status !== "closed" && (
-                                <span className={`rounded-full px-2 py-0.5 text-xs font-medium flex items-center gap-1 ${
-                                  slaTime.urgent ? "bg-red-500/20 text-red-400 border border-red-500/30 animate-pulse" : "bg-green-500/20 text-green-400 border border-green-500/30"
-                                }`}>
-                                  <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                  </svg>
-                                  {slaTime.text}
+                      <div
+                        key={ticket.id}
+                        id={`ticket-${ticket.id}`}
+                        onClick={() => setSelectedTicket(ticket)}
+                        className={`cursor-pointer rounded-lg border-2 bg-typhoon-dark/80 p-4 shadow-sm transition-all hover:shadow-md ${
+                          selectedTicket?.id === ticket.id
+                            ? "border-typhoon-primary ring-2 ring-lavender/30"
+                            : "border-rhythm"
+                        } ${
+                          createdTicket?.id === ticket.id
+                            ? "animate-in fade-in slide-in-from-bottom-4 duration-500 ring-4 ring-green-400/30"
+                            : ""
+                        }`}
+                      >
+                        <div className="mb-2 flex items-start justify-between gap-2">
+                          <div className="flex items-start gap-2 flex-1">
+                            <input
+                              type="checkbox"
+                              checked={selectedTickets.has(ticket.id)}
+                              onChange={(e) => {
+                                e.stopPropagation();
+                                toggleTicketSelection(ticket.id);
+                              }}
+                              className="mt-1 h-4 w-4 rounded border-rhythm bg-typhoon-darker text-lavender focus:ring-lavender"
+                            />
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-sm font-semibold text-gray-400">
+                                  #{ticket.id}
                                 </span>
-                              )}
-                              {ticket.category && ticket.category !== "other" && (
-                                <span className="rounded-full bg-lavender/20 px-2 py-0.5 text-xs font-medium text-lavender border border-lavender/30">
-                                  {CATEGORY_LABELS[ticket.category]}
+                                <span
+                                  className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[ticket.status]}`}
+                                >
+                                  {ticket.status}
                                 </span>
-                              )}
+                                <span
+                                  className={`rounded-full px-2 py-0.5 text-xs font-medium ${PRIORITY_COLORS[ticket.priority]}`}
+                                >
+                                  {ticket.priority}
+                                </span>
+                                {ticket.status !== "solved" && ticket.status !== "closed" && (
+                                  <span
+                                    className={`rounded-full px-2 py-0.5 text-xs font-medium flex items-center gap-1 ${
+                                      slaTime.urgent
+                                        ? "bg-red-500/20 text-red-400 border border-red-500/30 animate-pulse"
+                                        : "bg-green-500/20 text-green-400 border border-green-500/30"
+                                    }`}
+                                  >
+                                    <svg
+                                      className="h-3 w-3"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                      />
+                                    </svg>
+                                    {slaTime.text}
+                                  </span>
+                                )}
+                                {ticket.category && ticket.category !== "other" && (
+                                  <span className="rounded-full bg-lavender/20 px-2 py-0.5 text-xs font-medium text-lavender border border-lavender/30">
+                                    {CATEGORY_LABELS[ticket.category]}
+                                  </span>
+                                )}
+                              </div>
+                              <h3 className="mt-1 font-semibold text-white">{ticket.subject}</h3>
                             </div>
-                            <h3 className="mt-1 font-semibold text-white">
-                              {ticket.subject}
-                            </h3>
                           </div>
                         </div>
-                      </div>
-                      <p className="mb-2 line-clamp-2 text-sm text-gray-300">
-                        {ticket.description}
-                      </p>
-                      <div className="flex items-center gap-3 text-xs text-gray-400">
-                        <div className="flex items-center gap-1">
-                          <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                          </svg>
-                          <span>{ticket.requester_name}</span>
-                        </div>
-                        {ticket.assignee_name && (
-                          <div className="flex items-center gap-1 text-lavender">
-                            <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <p className="mb-2 line-clamp-2 text-sm text-gray-300">
+                          {ticket.description}
+                        </p>
+                        <div className="flex items-center gap-3 text-xs text-gray-400">
+                          <div className="flex items-center gap-1">
+                            <svg
+                              className="h-3 w-3"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                              />
                             </svg>
-                            <span>{ticket.assignee_name}</span>
+                            <span>{ticket.requester_name}</span>
+                          </div>
+                          {ticket.assignee_name && (
+                            <div className="flex items-center gap-1 text-lavender">
+                              <svg
+                                className="h-3 w-3"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>
+                              <span>{ticket.assignee_name}</span>
+                            </div>
+                          )}
+                          <span className="ml-auto">{formatRelativeTime(ticket.created_at)}</span>
+                        </div>
+                        {ticket.tags && ticket.tags.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1">
+                            {ticket.tags.slice(0, 3).map((tag) => (
+                              <span
+                                key={tag}
+                                className="rounded bg-rhythm px-2 py-0.5 text-xs text-gray-300"
+                              >
+                                #{tag}
+                              </span>
+                            ))}
+                            {ticket.tags.length > 3 && (
+                              <span className="rounded bg-rhythm px-2 py-0.5 text-xs text-gray-300">
+                                +{ticket.tags.length - 3}
+                              </span>
+                            )}
                           </div>
                         )}
-                        <span className="ml-auto">{formatRelativeTime(ticket.created_at)}</span>
                       </div>
-                      {ticket.tags && ticket.tags.length > 0 && (
-                        <div className="mt-2 flex flex-wrap gap-1">
-                          {ticket.tags.slice(0, 3).map((tag) => (
-                            <span key={tag} className="rounded bg-rhythm px-2 py-0.5 text-xs text-gray-300">
-                              #{tag}
-                            </span>
-                          ))}
-                          {ticket.tags.length > 3 && (
-                            <span className="rounded bg-rhythm px-2 py-0.5 text-xs text-gray-300">
-                              +{ticket.tags.length - 3}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
+                    );
                   })}
                 </div>
               )}
@@ -793,37 +931,65 @@ export default function Tickets() {
                         <span className="text-lg font-semibold text-gray-400">
                           Ticket #{selectedTicket.id}
                         </span>
-                        <span className={`rounded-full px-3 py-1 text-sm font-medium ${STATUS_COLORS[selectedTicket.status]}`}>
+                        <span
+                          className={`rounded-full px-3 py-1 text-sm font-medium ${STATUS_COLORS[selectedTicket.status]}`}
+                        >
                           {selectedTicket.status}
                         </span>
-                        <span className={`rounded-full px-3 py-1 text-sm font-medium ${PRIORITY_COLORS[selectedTicket.priority]}`}>
+                        <span
+                          className={`rounded-full px-3 py-1 text-sm font-medium ${PRIORITY_COLORS[selectedTicket.priority]}`}
+                        >
                           {selectedTicket.priority}
                         </span>
-                        {selectedTicket.status !== "solved" && selectedTicket.status !== "closed" && (() => {
-                          const slaTime = getSLATimeRemaining(selectedTicket);
-                          return (
-                            <span className={`rounded-full px-3 py-1 text-sm font-medium flex items-center gap-1 ${
-                              slaTime.urgent ? "bg-red-500/20 text-red-400 border border-red-500/30 animate-pulse" : "bg-green-500/20 text-green-400 border border-green-500/30"
-                            }`}>
-                              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                              SLA: {slaTime.text}
-                            </span>
-                          );
-                        })()}
+                        {selectedTicket.status !== "solved" &&
+                          selectedTicket.status !== "closed" &&
+                          (() => {
+                            const slaTime = getSLATimeRemaining(selectedTicket);
+                            return (
+                              <span
+                                className={`rounded-full px-3 py-1 text-sm font-medium flex items-center gap-1 ${
+                                  slaTime.urgent
+                                    ? "bg-red-500/20 text-red-400 border border-red-500/30 animate-pulse"
+                                    : "bg-green-500/20 text-green-400 border border-green-500/30"
+                                }`}
+                              >
+                                <svg
+                                  className="h-4 w-4"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                  />
+                                </svg>
+                                SLA: {slaTime.text}
+                              </span>
+                            );
+                          })()}
                       </div>
-                      <h2 className="text-2xl font-bold text-white">
-                        {selectedTicket.subject}
-                      </h2>
+                      <h2 className="text-2xl font-bold text-white">{selectedTicket.subject}</h2>
                     </div>
                     <button
                       onClick={() => setSelectedTicket(null)}
                       title="Close (ESC)"
                       className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-rhythm hover:text-gray-200"
                     >
-                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="h-5 w-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -831,9 +997,7 @@ export default function Tickets() {
                   <div className="mb-4 grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <div className="text-gray-400">ผู้ส่งคำขอ</div>
-                      <div className="font-medium text-white">
-                        {selectedTicket.requester_name}
-                      </div>
+                      <div className="font-medium text-white">{selectedTicket.requester_name}</div>
                       <div className="text-gray-300">{selectedTicket.requester_email}</div>
                     </div>
                     <div>
@@ -845,7 +1009,9 @@ export default function Tickets() {
                       >
                         <option value="">ยังไม่ได้มอบหมาย</option>
                         {agents.map((agent) => (
-                          <option key={agent.id} value={agent.id}>{agent.name}</option>
+                          <option key={agent.id} value={agent.id}>
+                            {agent.name}
+                          </option>
                         ))}
                       </select>
                     </div>
@@ -868,7 +1034,10 @@ export default function Tickets() {
                       <div className="text-sm text-gray-400 mb-1">Tags</div>
                       <div className="flex flex-wrap gap-1">
                         {selectedTicket.tags.map((tag) => (
-                          <span key={tag} className="rounded-full bg-lavender/20 px-3 py-1 text-xs font-medium text-lavender border border-lavender/30">
+                          <span
+                            key={tag}
+                            className="rounded-full bg-lavender/20 px-3 py-1 text-xs font-medium text-lavender border border-lavender/30"
+                          >
                             #{tag}
                           </span>
                         ))}
@@ -920,9 +1089,7 @@ export default function Tickets() {
                             className="rounded-lg border border-rhythm bg-typhoon-dark/50 p-4"
                           >
                             <div className="mb-2 flex items-center justify-between">
-                              <span className="font-medium text-white">
-                                {comment.author}
-                              </span>
+                              <span className="font-medium text-white">{comment.author}</span>
                               <span className="text-xs text-gray-400">
                                 {formatDate(comment.created_at)}
                               </span>
@@ -938,8 +1105,18 @@ export default function Tickets() {
             ) : (
               <div className="flex h-full items-center justify-center">
                 <div className="text-center text-gray-400">
-                  <svg className="mx-auto mb-2 h-16 w-16 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  <svg
+                    className="mx-auto mb-2 h-16 w-16 opacity-50"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
                   </svg>
                   <p>เลือก ticket เพื่อดูรายละเอียด</p>
                 </div>
@@ -960,16 +1137,19 @@ export default function Tickets() {
                 className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-rhythm hover:text-gray-200"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
 
             <form onSubmit={handleCreateTicket} className="space-y-4">
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-300">
-                  หัวข้อ
-                </label>
+                <label className="mb-1 block text-sm font-medium text-gray-300">หัวข้อ</label>
                 <input
                   type="text"
                   name="subject"
@@ -979,9 +1159,7 @@ export default function Tickets() {
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-300">
-                  รายละเอียด
-                </label>
+                <label className="mb-1 block text-sm font-medium text-gray-300">รายละเอียด</label>
                 <textarea
                   name="description"
                   required
@@ -992,9 +1170,7 @@ export default function Tickets() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-300">
-                    ชื่อ
-                  </label>
+                  <label className="mb-1 block text-sm font-medium text-gray-300">ชื่อ</label>
                   <input
                     type="text"
                     name="requester_name"
@@ -1005,9 +1181,7 @@ export default function Tickets() {
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-300">
-                    อีเมล
-                  </label>
+                  <label className="mb-1 block text-sm font-medium text-gray-300">อีเมล</label>
                   <input
                     type="email"
                     name="requester_email"
@@ -1019,9 +1193,7 @@ export default function Tickets() {
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-300">
-                  ความสำคัญ
-                </label>
+                <label className="mb-1 block text-sm font-medium text-gray-300">ความสำคัญ</label>
                 <select
                   name="priority"
                   defaultValue="normal"
@@ -1050,11 +1222,7 @@ export default function Tickets() {
                 >
                   {isCreating ? (
                     <>
-                      <svg
-                        className="h-5 w-5 animate-spin"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
+                      <svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
                         <circle
                           className="opacity-25"
                           cx="12"
@@ -1092,7 +1260,12 @@ export default function Tickets() {
                 className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-rhythm hover:text-gray-200"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
@@ -1105,9 +1278,7 @@ export default function Tickets() {
                       <div className="font-medium text-white">{entry.action}</div>
                       <div className="text-sm text-gray-400">โดย {entry.actor}</div>
                     </div>
-                    <div className="text-xs text-gray-400">
-                      {formatDate(entry.timestamp)}
-                    </div>
+                    <div className="text-xs text-gray-400">{formatDate(entry.timestamp)}</div>
                   </div>
                   <div className="text-sm text-gray-300">
                     <pre className="whitespace-pre-wrap font-sans">
@@ -1127,31 +1298,34 @@ export default function Tickets() {
           <div className="flex items-start gap-4 rounded-2xl border-2 border-green-400 bg-typhoon-darker p-6 shadow-2xl max-w-md">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg">
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-bold text-white mb-1">
-                🎉 สร้าง Ticket สำเร็จ!
-              </h3>
+              <h3 className="text-lg font-bold text-white mb-1">🎉 สร้าง Ticket สำเร็จ!</h3>
               <p className="text-sm text-gray-300 mb-2">
                 Ticket #{createdTicket.id} ถูกสร้างเรียบร้อยแล้ว
               </p>
               <div className="rounded-lg bg-typhoon-dark p-3 mb-3">
                 <div className="flex items-start gap-2 mb-2">
-                  <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[createdTicket.status]}`}>
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[createdTicket.status]}`}
+                  >
                     {createdTicket.status}
                   </span>
-                  <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${PRIORITY_COLORS[createdTicket.priority]}`}>
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${PRIORITY_COLORS[createdTicket.priority]}`}
+                  >
                     {createdTicket.priority}
                   </span>
                 </div>
-                <p className="font-semibold text-white text-sm mb-1">
-                  {createdTicket.subject}
-                </p>
-                <p className="text-xs text-gray-400">
-                  ผู้ส่งคำขอ: {createdTicket.requester_name}
-                </p>
+                <p className="font-semibold text-white text-sm mb-1">{createdTicket.subject}</p>
+                <p className="text-xs text-gray-400">ผู้ส่งคำขอ: {createdTicket.requester_name}</p>
               </div>
               <div className="flex gap-2">
                 <button
@@ -1176,7 +1350,12 @@ export default function Tickets() {
               className="rounded-lg p-1 text-gray-400 transition-colors hover:bg-rhythm hover:text-gray-200"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -1187,19 +1366,27 @@ export default function Tickets() {
       <div className="fixed bottom-4 left-4 bg-typhoon-darker/95 border border-rhythm rounded-lg px-4 py-2 text-xs text-gray-400 backdrop-blur-sm shadow-lg">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1">
-            <kbd className="rounded bg-typhoon-dark px-1.5 py-0.5 font-mono border border-rhythm">⌘/Ctrl+K</kbd>
+            <kbd className="rounded bg-typhoon-dark px-1.5 py-0.5 font-mono border border-rhythm">
+              ⌘/Ctrl+K
+            </kbd>
             <span>ค้นหา</span>
           </div>
           <div className="flex items-center gap-1">
-            <kbd className="rounded bg-typhoon-dark px-1.5 py-0.5 font-mono border border-rhythm">⌘/Ctrl+N</kbd>
+            <kbd className="rounded bg-typhoon-dark px-1.5 py-0.5 font-mono border border-rhythm">
+              ⌘/Ctrl+N
+            </kbd>
             <span>สร้าง</span>
           </div>
           <div className="flex items-center gap-1">
-            <kbd className="rounded bg-typhoon-dark px-1.5 py-0.5 font-mono border border-rhythm">↑↓</kbd>
+            <kbd className="rounded bg-typhoon-dark px-1.5 py-0.5 font-mono border border-rhythm">
+              ↑↓
+            </kbd>
             <span>นำทาง</span>
           </div>
           <div className="flex items-center gap-1">
-            <kbd className="rounded bg-typhoon-dark px-1.5 py-0.5 font-mono border border-rhythm">ESC</kbd>
+            <kbd className="rounded bg-typhoon-dark px-1.5 py-0.5 font-mono border border-rhythm">
+              ESC
+            </kbd>
             <span>ปิด</span>
           </div>
         </div>

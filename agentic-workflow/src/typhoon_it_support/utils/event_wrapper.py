@@ -37,6 +37,3 @@ def with_node_events(
         return wrapper
 
     return decorator
-
-
-

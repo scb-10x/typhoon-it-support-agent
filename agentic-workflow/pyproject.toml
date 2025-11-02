@@ -51,7 +51,7 @@ line-length = 88
 target-version = ["py312"]
 
 [tool.ruff]
-line-length = 88
+line-length = 200
 target-version = "py312"
 select = ["E", "F", "I", "N", "W"]
 

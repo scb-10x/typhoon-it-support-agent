@@ -7,7 +7,7 @@ import { useUser } from "./contexts/UserContext";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<"chat" | "tickets">("chat");
-  const { user, company, isLoading } = useUser();
+  const { user, isLoading } = useUser();
 
   return (
     <div className="flex h-screen w-full flex-col overflow-hidden">
@@ -17,10 +17,11 @@ export default function Home() {
           <nav className="flex">
             <button
               onClick={() => setActiveTab("chat")}
-              className={`flex items-center gap-2 border-b-2 px-4 sm:px-6 py-3 sm:py-4 text-sm font-medium transition-all ${activeTab === "chat"
+              className={`flex items-center gap-2 border-b-2 px-4 sm:px-6 py-3 sm:py-4 text-sm font-medium transition-all ${
+                activeTab === "chat"
                   ? "border-typhoon-primary text-typhoon-primary"
                   : "border-transparent text-gray-400 hover:border-rhythm hover:text-gray-300"
-                }`}
+              }`}
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -35,10 +36,11 @@ export default function Home() {
             </button>
             <button
               onClick={() => setActiveTab("tickets")}
-              className={`flex items-center gap-2 border-b-2 px-4 sm:px-6 py-3 sm:py-4 text-sm font-medium transition-all ${activeTab === "tickets"
+              className={`flex items-center gap-2 border-b-2 px-4 sm:px-6 py-3 sm:py-4 text-sm font-medium transition-all ${
+                activeTab === "tickets"
                   ? "border-typhoon-primary text-typhoon-primary"
                   : "border-transparent text-gray-400 hover:border-rhythm hover:text-gray-300"
-                }`}
+              }`}
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -57,7 +59,10 @@ export default function Home() {
             <div className="flex items-center gap-3 py-2">
               <div className="hidden lg:block text-right">
                 <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
-                  Logged in as <span className="font-medium text-blue-600 dark:text-blue-400">{user.nickname}</span>
+                  Logged in as{" "}
+                  <span className="font-medium text-blue-600 dark:text-blue-400">
+                    {user.nickname}
+                  </span>
                 </div>
                 <div className="text-sm font-medium text-gray-900 dark:text-white">
                   {user.full_name_th}

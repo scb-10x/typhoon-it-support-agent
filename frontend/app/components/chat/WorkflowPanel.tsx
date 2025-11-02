@@ -73,7 +73,12 @@ export const WorkflowPanel = ({ events, isVisible, onClose }: WorkflowPanelProps
             aria-label="Close workflow panel"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -82,8 +87,18 @@ export const WorkflowPanel = ({ events, isVisible, onClose }: WorkflowPanelProps
         {events.length === 0 ? (
           <div className="flex h-full items-center justify-center text-center">
             <div className="text-gray-400">
-              <svg className="mx-auto mb-2 h-12 w-12 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              <svg
+                className="mx-auto mb-2 h-12 w-12 opacity-50"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
               </svg>
               <p className="text-sm">ส่งข้อความเพื่อดู workflow events</p>
             </div>
@@ -119,14 +134,10 @@ export const WorkflowPanel = ({ events, isVisible, onClose }: WorkflowPanelProps
                       </p>
                     )}
                     {event.data?.message && (
-                      <p className="mt-1 text-gray-200">
-                        {event.data.message}
-                      </p>
+                      <p className="mt-1 text-gray-200">{event.data.message}</p>
                     )}
                     {event.data?.error && (
-                      <p className="mt-1 text-desert">
-                        Error: {event.data.error}
-                      </p>
+                      <p className="mt-1 text-desert">Error: {event.data.error}</p>
                     )}
                     <p className="mt-1 text-xs text-gray-400">
                       {new Date(event.timestamp).toLocaleTimeString()}
@@ -141,4 +152,3 @@ export const WorkflowPanel = ({ events, isVisible, onClose }: WorkflowPanelProps
     </div>
   );
 };
-

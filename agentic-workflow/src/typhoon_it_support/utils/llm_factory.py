@@ -61,6 +61,3 @@ def create_streaming_llm() -> ChatOpenAI:
         ChatOpenAI instance with streaming enabled.
     """
     return create_llm(streaming=True)
-
-
-

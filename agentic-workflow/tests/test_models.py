@@ -29,4 +29,3 @@ def test_agent_state_with_messages():
     assert state["messages"][0].content == "Test message"
     assert state["iteration"] == 1
     assert state["next_action"] == "continue"
-

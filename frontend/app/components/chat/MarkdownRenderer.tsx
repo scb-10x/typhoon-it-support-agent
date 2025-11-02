@@ -26,43 +26,27 @@ export const MarkdownRenderer = ({ content }: MarkdownRendererProps) => {
           </h2>
         ),
         h3: ({ children }) => (
-          <h3 className="mb-3 mt-5 text-xl font-semibold text-white first:mt-0">
-            {children}
-          </h3>
+          <h3 className="mb-3 mt-5 text-xl font-semibold text-white first:mt-0">{children}</h3>
         ),
         h4: ({ children }) => (
-          <h4 className="mb-2 mt-4 text-lg font-semibold text-white first:mt-0">
-            {children}
-          </h4>
+          <h4 className="mb-2 mt-4 text-lg font-semibold text-white first:mt-0">{children}</h4>
         ),
         h5: ({ children }) => (
-          <h5 className="mb-2 mt-3 text-base font-semibold text-white first:mt-0">
-            {children}
-          </h5>
+          <h5 className="mb-2 mt-3 text-base font-semibold text-white first:mt-0">{children}</h5>
         ),
         h6: ({ children }) => (
-          <h6 className="mb-2 mt-3 text-sm font-semibold text-white first:mt-0">
-            {children}
-          </h6>
+          <h6 className="mb-2 mt-3 text-sm font-semibold text-white first:mt-0">{children}</h6>
         ),
         p: ({ children }) => (
-          <p className="mb-4 leading-relaxed text-gray-200 last:mb-0">
-            {children}
-          </p>
+          <p className="mb-4 leading-relaxed text-gray-200 last:mb-0">{children}</p>
         ),
         ul: ({ children }) => (
-          <ul className="mb-4 ml-6 list-disc space-y-2 text-gray-200">
-            {children}
-          </ul>
+          <ul className="mb-4 ml-6 list-disc space-y-2 text-gray-200">{children}</ul>
         ),
         ol: ({ children }) => (
-          <ol className="mb-4 ml-6 list-decimal space-y-2 text-gray-200">
-            {children}
-          </ol>
+          <ol className="mb-4 ml-6 list-decimal space-y-2 text-gray-200">{children}</ol>
         ),
-        li: ({ children }) => (
-          <li className="leading-relaxed">{children}</li>
-        ),
+        li: ({ children }) => <li className="leading-relaxed">{children}</li>,
         blockquote: ({ children }) => (
           <blockquote className="my-4 border-l-4 border-typhoon-primary pl-4 italic text-cerulean">
             {children}
@@ -70,39 +54,19 @@ export const MarkdownRenderer = ({ content }: MarkdownRendererProps) => {
         ),
         table: ({ children }) => (
           <div className="my-4 overflow-x-auto">
-            <table className="min-w-full divide-y divide-rhythm">
-              {children}
-            </table>
+            <table className="min-w-full divide-y divide-rhythm">{children}</table>
           </div>
         ),
-        thead: ({ children }) => (
-          <thead className="bg-typhoon-darker">
-            {children}
-          </thead>
-        ),
+        thead: ({ children }) => <thead className="bg-typhoon-darker">{children}</thead>,
         tbody: ({ children }) => (
-          <tbody className="divide-y divide-rhythm bg-typhoon-dark">
-            {children}
-          </tbody>
+          <tbody className="divide-y divide-rhythm bg-typhoon-dark">{children}</tbody>
         ),
-        tr: ({ children }) => (
-          <tr className="even:bg-rhythm/10">
-            {children}
-          </tr>
-        ),
+        tr: ({ children }) => <tr className="even:bg-rhythm/10">{children}</tr>,
         th: ({ children }) => (
-          <th className="px-4 py-3 text-left text-sm font-semibold text-white">
-            {children}
-          </th>
+          <th className="px-4 py-3 text-left text-sm font-semibold text-white">{children}</th>
         ),
-        td: ({ children }) => (
-          <td className="px-4 py-3 text-sm text-gray-200">
-            {children}
-          </td>
-        ),
-        hr: () => (
-          <hr className="my-6 border-t-2 border-rhythm" />
-        ),
+        td: ({ children }) => <td className="px-4 py-3 text-sm text-gray-200">{children}</td>,
+        hr: () => <hr className="my-6 border-t-2 border-rhythm" />,
         code: ({ children, className }) => {
           const match = /language-(\w+)/.exec(className || "");
           const language = match ? match[1] : "";
@@ -115,16 +79,8 @@ export const MarkdownRenderer = ({ content }: MarkdownRendererProps) => {
             <CodeBlock language={language} value={String(children).replace(/\n$/, "")} />
           );
         },
-        strong: ({ children }) => (
-          <strong className="font-semibold text-white">
-            {children}
-          </strong>
-        ),
-        em: ({ children }) => (
-          <em className="italic text-gray-200">
-            {children}
-          </em>
-        ),
+        strong: ({ children }) => <strong className="font-semibold text-white">{children}</strong>,
+        em: ({ children }) => <em className="italic text-gray-200">{children}</em>,
         a: ({ children, href }) => (
           <a
             href={href}
@@ -141,4 +97,3 @@ export const MarkdownRenderer = ({ content }: MarkdownRendererProps) => {
     </ReactMarkdown>
   );
 };
-

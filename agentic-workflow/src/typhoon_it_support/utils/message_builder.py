@@ -53,7 +53,9 @@ def build_conversation_summary(state: AgentState, max_messages: int = 10) -> str
             elif msg.type == "ai":
                 if hasattr(msg, "tool_calls") and msg.tool_calls:
                     tool_names = [tc.get("name", "unknown") for tc in msg.tool_calls]
-                    conversation_summary.append(f"Agent used tools: {', '.join(tool_names)}")
+                    conversation_summary.append(
+                        f"Agent used tools: {', '.join(tool_names)}"
+                    )
                 elif msg.content:
                     conversation_summary.append(f"Agent: {msg.content[:200]}")
             elif msg.type == "tool":
@@ -76,6 +78,3 @@ def has_tool_results(state: AgentState, look_back: int = 5) -> bool:
         if hasattr(msg, "type") and msg.type == "tool":
             return True
     return False
-
-
-

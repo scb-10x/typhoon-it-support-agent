@@ -6,8 +6,8 @@ from ..events import EventEmitter, create_event_callbacks
 from ..models import AgentState
 from ..prompts import AGENT_SYSTEM_PROMPT
 from ..tools import (
-    add_ticket_comment,
     add_tags_to_ticket,
+    add_ticket_comment,
     assign_ticket,
     create_ticket,
     delete_ticket,
@@ -23,7 +23,7 @@ from ..tools import (
     update_ticket_priority,
     update_ticket_status,
 )
-from ..utils import add_instruction, build_base_messages, create_tool_llm
+from ..utils import build_base_messages, create_tool_llm
 
 TOOLS = [
     # Time and document search tools
@@ -46,6 +46,7 @@ TOOLS = [
     set_ticket_category,
     set_ticket_due_date,
 ]
+
 
 def agent_node(state: AgentState) -> AgentState:
     """Agent decides to use tools OR provide final answer.

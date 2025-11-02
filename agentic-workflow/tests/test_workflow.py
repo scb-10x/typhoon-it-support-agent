@@ -14,4 +14,3 @@ def test_workflow_has_nodes():
     workflow = create_workflow()
     # The compiled graph should be executable
     assert hasattr(workflow, "invoke")
-

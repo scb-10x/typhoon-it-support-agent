@@ -1,6 +1,6 @@
 """Test cases for evaluation-driven development."""
 
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 # Test cases following Best Practice #2: Design test cases for agentic workflows
 TEST_CASES: List[Dict[str, Any]] = [
@@ -190,10 +190,10 @@ TEST_CASES: List[Dict[str, Any]] = [
 
 def get_test_cases_by_category(category: str) -> List[Dict[str, Any]]:
     """Get test cases filtered by category.
-    
+
     Args:
         category: Category name (policy_query, troubleshooting, ticket_creation, etc.)
-        
+
     Returns:
         List of test cases matching the category.
     """
@@ -202,10 +202,10 @@ def get_test_cases_by_category(category: str) -> List[Dict[str, Any]]:
 
 def get_test_case_by_id(test_id: str) -> Dict[str, Any]:
     """Get a specific test case by ID.
-    
+
     Args:
         test_id: Test case ID.
-        
+
     Returns:
         Test case dictionary.
     """
@@ -213,4 +213,3 @@ def get_test_case_by_id(test_id: str) -> Dict[str, Any]:
         if tc["id"] == test_id:
             return tc
     raise ValueError(f"Test case {test_id} not found")
-

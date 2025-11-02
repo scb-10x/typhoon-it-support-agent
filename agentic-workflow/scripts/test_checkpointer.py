@@ -33,7 +33,7 @@ def test_checkpointer() -> None:
     for i, msg in enumerate(result1["messages"]):
         role = "User" if hasattr(msg, "type") and msg.type == "human" else "AI"
         content = msg.content[:100] + "..." if len(msg.content) > 100 else msg.content
-        print(f"  {i+1}. {role}: {content}")
+        print(f"  {i + 1}. {role}: {content}")
 
     print("\nTurn 2: Follow-up question (same session)")
     print("-" * 50)
@@ -49,7 +49,7 @@ def test_checkpointer() -> None:
     for i, msg in enumerate(result2["messages"]):
         role = "User" if hasattr(msg, "type") and msg.type == "human" else "AI"
         content = msg.content[:100] + "..." if len(msg.content) > 100 else msg.content
-        print(f"  {i+1}. {role}: {content}")
+        print(f"  {i + 1}. {role}: {content}")
 
     print("\nTurn 3: Another follow-up (same session)")
     print("-" * 50)
@@ -65,7 +65,7 @@ def test_checkpointer() -> None:
     for i, msg in enumerate(result3["messages"]):
         role = "User" if hasattr(msg, "type") and msg.type == "human" else "AI"
         content = msg.content[:100] + "..." if len(msg.content) > 100 else msg.content
-        print(f"  {i+1}. {role}: {content}")
+        print(f"  {i + 1}. {role}: {content}")
 
     print("\n" + "=" * 50)
     print("Test completed successfully!")
@@ -138,4 +138,3 @@ def test_multiple_sessions() -> None:
 if __name__ == "__main__":
     test_checkpointer()
     test_multiple_sessions()
-

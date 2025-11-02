@@ -9,16 +9,13 @@ export default function DemoIndicator() {
           <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500"></span>
         </div>
         <div className="text-sm">
-          <div className="font-semibold text-gray-900 dark:text-white">
-            🎭 Demo Mode
-          </div>
+          <div className="font-semibold text-gray-900 dark:text-white">🎭 Demo Mode</div>
           <div className="text-xs text-gray-500 dark:text-gray-400">
-            Logged in as <span className="font-medium text-blue-600 dark:text-blue-400">Somchai</span>
+            Logged in as{" "}
+            <span className="font-medium text-blue-600 dark:text-blue-400">Somchai</span>
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-

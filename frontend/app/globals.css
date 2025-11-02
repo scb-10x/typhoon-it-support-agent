@@ -8,19 +8,19 @@
   --background-secondary: #313131; /* Semi-Black */
   --foreground: #ffffff;
   --foreground-muted: #e5e5e5;
-  
+
   /* Brand Colors */
   --typhoon-primary: #726bdf; /* Medium Slate Blue */
   --typhoon-dark: #28204b; /* Russian Violet */
   --typhoon-darker: #313131; /* Semi-Black */
-  
+
   /* Accent Colors */
   --accent-lavender: #a77be8;
   --accent-kobi: #e19ec8;
   --accent-rhythm: #7c7399;
   --accent-cerulean: #6ca1c7;
   --accent-desert: #f0bfaa;
-  
+
   /* Font Variables */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -31,7 +31,12 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-pridi), var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  font-family:
+    var(--font-pridi),
+    var(--font-geist-sans),
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 /* Custom Animations */

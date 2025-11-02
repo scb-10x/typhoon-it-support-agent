@@ -38,11 +38,8 @@ def test_chat_endpoint_basic(mock_workflow):
         "iteration": 1,
         "next_action": "continue",
     }
-    
-    response = client.post(
-        "/chat",
-        json={"message": "Hello, I need help"}
-    )
+
+    response = client.post("/chat", json={"message": "Hello, I need help"})
     assert response.status_code == 200
     data = response.json()
     assert "message" in data
@@ -64,21 +61,14 @@ def test_chat_endpoint_with_session(mock_workflow):
         "iteration": 1,
         "next_action": "continue",
     }
-    
+
     # First request
-    response1 = client.post(
-        "/chat",
-        json={"message": "First message"}
-    )
+    response1 = client.post("/chat", json={"message": "First message"})
     session_id = response1.json()["session_id"]
-    
+
     # Second request with same session
     response2 = client.post(
-        "/chat",
-        json={
-            "message": "Second message",
-            "session_id": session_id
-        }
+        "/chat", json={"message": "Second message", "session_id": session_id}
     )
     assert response2.status_code == 200
     data = response2.json()
@@ -102,17 +92,13 @@ def test_clear_session(mock_workflow):
         "iteration": 1,
         "next_action": "continue",
     }
-    
+
     # Create a session
-    response1 = client.post(
-        "/chat",
-        json={"message": "Test message"}
-    )
+    response1 = client.post("/chat", json={"message": "Test message"})
     session_id = response1.json()["session_id"]
-    
+
     # Clear the session
     response2 = client.delete(f"/chat/{session_id}")
     assert response2.status_code == 200
     data = response2.json()
     assert data["status"] == "success"
-

@@ -1,14 +1,13 @@
 """Mock user context for hypothetical Thai employee in a logged-in state."""
 
-from typing import Dict, Optional
 from dataclasses import dataclass
-from datetime import datetime
+from typing import Dict
 
 
 @dataclass
 class UserProfile:
     """User profile information for the logged-in employee."""
-    
+
     employee_id: str
     email: str
     full_name_th: str
@@ -20,7 +19,7 @@ class UserProfile:
     office_location: str
     manager: str
     joined_date: str
-    
+
     def to_dict(self) -> Dict[str, str]:
         """Convert user profile to dictionary."""
         return {
@@ -36,12 +35,12 @@ class UserProfile:
             "manager": self.manager,
             "joined_date": self.joined_date,
         }
-    
+
     @property
     def display_name(self) -> str:
         """Get display name (Thai name with nickname)."""
         return f"{self.full_name_th} ({self.nickname})"
-    
+
     @property
     def display_name_en(self) -> str:
         """Get display name (English name)."""
@@ -77,7 +76,7 @@ COMPANY_INFO = {
 
 def get_current_user() -> UserProfile:
     """Get the current logged-in user profile.
-    
+
     In a real application, this would retrieve the user from session/JWT token.
     For this hypothetical scenario, we return the mock user.
     """
@@ -86,9 +85,7 @@ def get_current_user() -> UserProfile:
 
 def get_company_info() -> Dict[str, str]:
     """Get company information.
-    
+
     Returns company details for the hypothetical organization.
     """
     return COMPANY_INFO
-
-

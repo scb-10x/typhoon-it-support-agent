@@ -32,7 +32,8 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "ผู้ช่วย IT Support - Powered by Typhoon AI",
-  description: "ระบบช่วยเหลือด้านไอทีอัจฉริยะที่ขับเคลื่อนด้วย Typhoon 2.5 AI รองรับภาษาไทยและภาษาอังกฤษ สำหรับแก้ไขปัญหา IT ต่างๆ",
+  description:
+    "ระบบช่วยเหลือด้านไอทีอัจฉริยะที่ขับเคลื่อนด้วย Typhoon 2.5 AI รองรับภาษาไทยและภาษาอังกฤษ สำหรับแก้ไขปัญหา IT ต่างๆ",
   keywords: ["IT Support", "Typhoon AI", "Thai AI", "Tech Support", "Help Desk"],
   authors: [{ name: "Typhoon IT Support" }],
   themeColor: "#726bdf", // Typhoon Primary Color
@@ -48,9 +49,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${pridi.variable} ${notoSansThai.variable} antialiased`}
       >
-        <UserProvider>
-          {children}
-        </UserProvider>
+        <UserProvider>{children}</UserProvider>
       </body>
     </html>
   );
