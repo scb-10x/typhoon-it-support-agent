@@ -1,5 +1,9 @@
 # Typhoon IT Support - Agentic Workflow Example
 
+**This repository is archived and released as-is. If you’re interested in this work, please contact us.**
+
+---
+
 A **companion example project** demonstrating best practices for building agentic AI systems using **Typhoon 2.5** and **LangGraph**. This project showcases patterns for creating intelligent IT support assistants with real-time streaming, tool usage, and multi-turn conversations.
 
 Please refer to this companion blog post for more details: 🇬🇧 [Mastering Agentic Workflows: 20 Principles That Works](https://opentyphoon.ai/blog/en/agentic-workflows-principles) | 🇹🇭 [20 หลักการเพื่อการออกแบบ Agentic Workflow อย่างมีประสิทธิภาพ](https://opentyphoon.ai/blog/th/agentic-workflows-principles)
